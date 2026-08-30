@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DoctorRouteImport } from './routes/doctor'
+import { Route as PatientRouteImport } from './routes/patient'
 import { Route as PharmacyIndexRouteImport } from './routes/pharmacy.index'
 import { Route as PharmacyVerifyIdRouteImport } from './routes/pharmacy.verify.$id'
 
@@ -30,6 +31,11 @@ const DoctorRoute = DoctorRouteImport.update({
   path: '/doctor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PatientRoute = PatientRouteImport.update({
+  id: '/patient',
+  path: '/patient',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PharmacyIndexRoute = PharmacyIndexRouteImport.update({
   id: '/pharmacy/',
   path: '/pharmacy/',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
   '/pharmacy/': typeof PharmacyIndexRoute
   '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
   '/pharmacy': typeof PharmacyIndexRoute
   '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
   '/pharmacy/': typeof PharmacyIndexRoute
   '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/doctor' | '/pharmacy/' | '/pharmacy/verify/$id'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/doctor'
+    | '/patient'
+    | '/pharmacy/'
+    | '/pharmacy/verify/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/doctor' | '/pharmacy' | '/pharmacy/verify/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/doctor'
+    | '/patient'
+    | '/pharmacy'
+    | '/pharmacy/verify/$id'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/doctor'
+    | '/patient'
     | '/pharmacy/'
     | '/pharmacy/verify/$id'
   fileRoutesById: FileRoutesById
@@ -81,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DoctorRoute: typeof DoctorRoute
+  PatientRoute: typeof PatientRoute
   PharmacyIndexRoute: typeof PharmacyIndexRoute
   PharmacyVerifyIdRoute: typeof PharmacyVerifyIdRoute
 }
@@ -108,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/patient': {
+      id: '/patient'
+      path: '/patient'
+      fullPath: '/patient'
+      preLoaderRoute: typeof PatientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pharmacy/': {
       id: '/pharmacy/'
       path: '/pharmacy'
@@ -129,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DoctorRoute: DoctorRoute,
+  PatientRoute: PatientRoute,
   PharmacyIndexRoute: PharmacyIndexRoute,
   PharmacyVerifyIdRoute: PharmacyVerifyIdRoute,
 }
