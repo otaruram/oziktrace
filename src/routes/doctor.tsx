@@ -52,7 +52,7 @@ function DoctorPage() {
   const [open, setOpen] = useState(false);
   const [nik, setNik] = useState("3273****1234");
   const [patientName, setPatientName] = useState("");
-  const [diagnosis, setDiagnosis] = useState(ICD[0]);
+  const [diagnosis, setDiagnosis] = useState<string>(ICD[0]!);
   const [items, setItems] = useState<DrugItem[]>([emptyItem()]);
 
   const { score, flags } = useMemo(() => scorePrescription(items, diagnosis), [items, diagnosis]);

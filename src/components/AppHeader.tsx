@@ -29,7 +29,7 @@ export function Logo({ compact = false }: { compact?: boolean }) {
 export function RoleSwitcher() {
   const { role, setRole } = useOzik();
   const router = useRouter();
-  const current = ROLES.find((r) => r.id === role) ?? ROLES[3];
+  const current = ROLES.find((r) => r.id === role) ?? ROLES[3]!;
 
   const go = (r: Role) => {
     setRole(r);
