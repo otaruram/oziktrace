@@ -58,7 +58,7 @@ function PatientPage() {
                     {rx.items.map((i) => i.name).join(", ")}
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
-                    {rx.faskes.split("—")[0].trim()} · {rupiah(rx.escrowCap)}
+                    {rx.faskes.split("—")[0]!.trim()} · {rupiah(rx.escrowCap)}
                   </p>
                 </div>
                 <ChevronRight className="size-4 shrink-0 text-muted-foreground" />

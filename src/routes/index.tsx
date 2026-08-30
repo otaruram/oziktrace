@@ -189,10 +189,10 @@ function Landing() {
               </span>
             </div>
             <div className="pt-6">
-              <h3 className="text-xl font-semibold">{STEPS[active].title}</h3>
-              <p className="mt-3 max-w-xl text-sm text-muted-foreground">{STEPS[active].body}</p>
+              <h3 className="text-xl font-semibold">{STEPS[active]!.title}</h3>
+              <p className="mt-3 max-w-xl text-sm text-muted-foreground">{STEPS[active]!.body}</p>
               <div className="mt-6 rounded-xl border border-border bg-background p-4">
-                <p className="font-mono text-xs">{STEPS[active].meta}</p>
+                <p className="font-mono text-xs">{STEPS[active]!.meta}</p>
                 <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-surface-strong">
                   <div
                     className="h-full rounded-full bg-crimson-gradient transition-all duration-700"

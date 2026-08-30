@@ -62,12 +62,18 @@ function VerifyPage() {
   }
 
   const addPhoto = () => {
-    if (photos.length >= 5) return toast.error("Maksimal 5 foto.");
+    if (photos.length >= 5) {
+      toast.error("Maksimal 5 foto.");
+      return;
+    }
     setPhotos((p) => [...p, SLOTS[p.length] ?? `Frame ${p.length + 1}`]);
   };
 
   const runScan = () => {
-    if (photos.length < 2) return toast.error("Minimal 2 foto: etiket dan strip obat.");
+    if (photos.length < 2) {
+      toast.error("Minimal 2 foto: etiket dan strip obat.");
+      return;
+    }
     setScanning(true);
     setTimeout(() => {
       const r = submitQc(rx.id, photos);
