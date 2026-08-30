@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DoctorRouteImport } from './routes/doctor'
+import { Route as PatientRouteImport } from './routes/patient'
+import { Route as PharmacyIndexRouteImport } from './routes/pharmacy.index'
+import { Route as TrackIdRouteImport } from './routes/track.$id'
+import { Route as PharmacyVerifyIdRouteImport } from './routes/pharmacy.verify.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DoctorRoute = DoctorRouteImport.update({
+  id: '/doctor',
+  path: '/doctor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PatientRoute = PatientRouteImport.update({
+  id: '/patient',
+  path: '/patient',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmacyIndexRoute = PharmacyIndexRouteImport.update({
+  id: '/pharmacy/',
+  path: '/pharmacy/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackIdRoute = TrackIdRouteImport.update({
+  id: '/track/$id',
+  path: '/track/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmacyVerifyIdRoute = PharmacyVerifyIdRouteImport.update({
+  id: '/pharmacy/verify/$id',
+  path: '/pharmacy/verify/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
+  '/track/$id': typeof TrackIdRoute
+  '/pharmacy/': typeof PharmacyIndexRoute
+  '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
+  '/track/$id': typeof TrackIdRoute
+  '/pharmacy': typeof PharmacyIndexRoute
+  '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/doctor': typeof DoctorRoute
+  '/patient': typeof PatientRoute
+  '/track/$id': typeof TrackIdRoute
+  '/pharmacy/': typeof PharmacyIndexRoute
+  '/pharmacy/verify/$id': typeof PharmacyVerifyIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/doctor'
+    | '/patient'
+    | '/track/$id'
+    | '/pharmacy/'
+    | '/pharmacy/verify/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/doctor'
+    | '/patient'
+    | '/track/$id'
+    | '/pharmacy'
+    | '/pharmacy/verify/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/doctor'
+    | '/patient'
+    | '/track/$id'
+    | '/pharmacy/'
+    | '/pharmacy/verify/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  DoctorRoute: typeof DoctorRoute
+  PatientRoute: typeof PatientRoute
+  TrackIdRoute: typeof TrackIdRoute
+  PharmacyIndexRoute: typeof PharmacyIndexRoute
+  PharmacyVerifyIdRoute: typeof PharmacyVerifyIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/doctor': {
+      id: '/doctor'
+      path: '/doctor'
+      fullPath: '/doctor'
+      preLoaderRoute: typeof DoctorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/patient': {
+      id: '/patient'
+      path: '/patient'
+      fullPath: '/patient'
+      preLoaderRoute: typeof PatientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacy/': {
+      id: '/pharmacy/'
+      path: '/pharmacy'
+      fullPath: '/pharmacy/'
+      preLoaderRoute: typeof PharmacyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track/$id': {
+      id: '/track/$id'
+      path: '/track/$id'
+      fullPath: '/track/$id'
+      preLoaderRoute: typeof TrackIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacy/verify/$id': {
+      id: '/pharmacy/verify/$id'
+      path: '/pharmacy/verify/$id'
+      fullPath: '/pharmacy/verify/$id'
+      preLoaderRoute: typeof PharmacyVerifyIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  DoctorRoute: DoctorRoute,
+  PatientRoute: PatientRoute,
+  TrackIdRoute: TrackIdRoute,
+  PharmacyIndexRoute: PharmacyIndexRoute,
+  PharmacyVerifyIdRoute: PharmacyVerifyIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
