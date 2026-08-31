@@ -142,50 +142,94 @@ function DoctorPage() {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">Item Obat</p>
-                  <Button variant="outline" size="sm" onClick={() => setItems((p) => [...p, emptyItem()])}>
-                    <Plus className="size-3.5" /> Tambah item
+              <div className="mt-5 overflow-hidden rounded-xl border border-border">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-surface px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">Item Obat</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Isi nama obat, dosis, jumlah, dan aturan pakai.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="shrink-0"
+                    onClick={() => setItems((p) => [...p, emptyItem()])}
+                  >
+                    <Plus className="size-3.5" /> Tambah
                   </Button>
                 </div>
-                <div className="mt-3 space-y-3">
+
+                <div className="hidden grid-cols-12 gap-3 border-b border-border bg-surface/60 px-4 py-2 font-mono text-[10px] tracking-widest text-muted-foreground uppercase sm:grid">
+                  <span className="col-span-4">Nama obat</span>
+                  <span className="col-span-2">Dosis</span>
+                  <span className="col-span-2">Qty</span>
+                  <span className="col-span-3">Aturan pakai</span>
+                  <span className="col-span-1 text-right">—</span>
+                </div>
+
+                <div className="divide-y divide-border">
                   {items.map((it, i) => (
-                    <div key={i} className="rounded-xl border border-border bg-surface p-3">
-                      <div className="grid gap-2 sm:grid-cols-12">
+                    <div
+                      key={i}
+                      className="grid gap-2 px-4 py-3 transition-colors hover:bg-surface sm:grid-cols-12 sm:items-center sm:gap-3"
+                    >
+                      <div className="sm:col-span-4">
+                        <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                          Nama obat
+                        </label>
                         <input
-                          className={`${field} sm:col-span-4`}
-                          placeholder="Nama obat"
+                          className={field}
+                          placeholder="Metformin 500mg"
                           value={it.name}
                           onChange={(e) => setItem(i, { name: e.target.value })}
                         />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2 sm:gap-3">
+                        <div>
+                          <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                            Dosis
+                          </label>
+                          <input
+                            className={field}
+                            placeholder="500mg"
+                            value={it.dosage}
+                            onChange={(e) => setItem(i, { dosage: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                            Qty
+                          </label>
+                          <input
+                            className={`${field} text-right font-mono tabular-nums`}
+                            type="number"
+                            min={0}
+                            placeholder="0"
+                            value={it.qty || ""}
+                            onChange={(e) => setItem(i, { qty: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+                      <div className="sm:col-span-3">
+                        <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                          Aturan pakai
+                        </label>
                         <input
-                          className={`${field} sm:col-span-2`}
-                          placeholder="Dosis"
-                          value={it.dosage}
-                          onChange={(e) => setItem(i, { dosage: e.target.value })}
-                        />
-                        <input
-                          className={`${field} sm:col-span-2`}
-                          type="number"
-                          placeholder="Qty"
-                          value={it.qty || ""}
-                          onChange={(e) => setItem(i, { qty: Number(e.target.value) })}
-                        />
-                        <input
-                          className={`${field} sm:col-span-3`}
-                          placeholder="Aturan pakai"
+                          className={field}
+                          placeholder="2x1 sesudah makan"
                           value={it.usage}
                           onChange={(e) => setItem(i, { usage: e.target.value })}
                         />
-                        <button
-                          onClick={() => setItems((p) => p.filter((_, x) => x !== i))}
-                          className="grid place-items-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary sm:col-span-1"
-                          aria-label="Hapus item"
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
                       </div>
+                      <button
+                        onClick={() => setItems((p) => p.filter((_, x) => x !== i))}
+                        className="flex h-9 items-center justify-center gap-1.5 rounded-lg border border-border bg-background text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-soft hover:text-primary sm:col-span-1 sm:h-auto sm:self-stretch"
+                        aria-label="Hapus item"
+                      >
+                        <Trash2 className="size-4" />
+                        <span className="sm:hidden">Hapus item</span>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -194,14 +238,15 @@ function DoctorPage() {
               <MlWidget score={score} level={level} flags={flags} compact />
 
               <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">Virtual Escrow Cap</p>
-                  <p className="text-xl font-semibold">{rupiah(cap)}</p>
+                  <p className="text-xl font-semibold tabular-nums">{rupiah(cap)}</p>
                 </div>
-                <Button size="lg" className="shadow-crimson" onClick={submit}>
-                  Terbitkan & Kunci Plafon Klaim
+                <Button size="lg" className="shrink-0 shadow-crimson" onClick={submit}>
+                  Terbitkan &amp; Kunci Plafon Klaim
                 </Button>
               </div>
+
             </DialogContent>
           </Dialog>
         </div>
