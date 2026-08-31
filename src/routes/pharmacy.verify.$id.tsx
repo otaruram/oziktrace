@@ -168,19 +168,56 @@ function VerifyPage() {
                     <div className="grid h-full place-items-center">
                       <ScanLine className="size-6 text-muted-foreground" />
                     </div>
+
+                    {scanning && (
+                      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                        {/* laser sweep */}
+                        <div
+                          className="animate-scan-sweep absolute inset-x-0 top-0 h-8"
+                          style={{
+                            animationDelay: `${i * 120}ms`,
+                            background:
+                              "linear-gradient(to bottom, transparent, color-mix(in oklab, var(--primary) 35%, transparent), transparent)",
+                          }}
+                        >
+                          <div className="absolute inset-x-0 bottom-0 h-px bg-primary shadow-crimson" />
+                        </div>
+                        {/* mock bounding boxes */}
+                        {BOXES.map((b, bi) => (
+                          <div
+                            key={bi}
+                            className="animate-box-pop absolute rounded-sm border border-primary/70 bg-primary/5"
+                            style={{
+                              left: b.l,
+                              top: b.t,
+                              width: b.w,
+                              height: b.h,
+                              animationDelay: `${300 + bi * 220 + i * 100}ms`,
+                            }}
+                          >
+                            <span className="absolute -top-3.5 left-0 rounded-sm bg-primary px-1 font-mono text-[7px] leading-3 text-primary-foreground">
+                              {b.tag}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <span className="absolute bottom-1.5 left-1.5 rounded-md bg-background/90 px-1.5 py-0.5 font-mono text-[9px]">
                       {p}
                     </span>
-                    <button
-                      onClick={() => setPhotos((prev) => prev.filter((_, x) => x !== i))}
-                      className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-border bg-background text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary"
-                      aria-label="Hapus foto"
-                    >
-                      <Trash2 className="size-3" />
-                    </button>
+                    {!scanning && (
+                      <button
+                        onClick={() => setPhotos((prev) => prev.filter((_, x) => x !== i))}
+                        className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-border bg-background text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-primary"
+                        aria-label="Hapus foto"
+                      >
+                        <Trash2 className="size-3" />
+                      </button>
+                    )}
                   </div>
                 ))}
-                {photos.length < 5 && (
+                {photos.length < 5 && !scanning && (
                   <button
                     onClick={addPhoto}
                     className="grid aspect-4/3 place-items-center rounded-xl border border-dashed border-border-strong bg-surface text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary-soft hover:text-primary"
@@ -192,6 +229,13 @@ function VerifyPage() {
                   </button>
                 )}
               </div>
+
+              {scanning && (
+                <p className="mt-3 font-mono text-[11px] text-primary">
+                  ▍ Vision pipeline: OCR etiket → segmentasi strip → matching dosis…
+                </p>
+              )}
+
 
               <Button onClick={runScan} disabled={scanning} size="lg" className="mt-5 w-full shadow-crimson">
                 {scanning ? <Loader2 className="size-4 animate-spin" /> : <ScanLine className="size-4" />}
