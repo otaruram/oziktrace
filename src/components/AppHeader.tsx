@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { ChevronDown, ShieldCheck, RotateCcw } from "lucide-react";
+import { ChevronDown, ShieldCheck, RotateCcw, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -58,6 +58,11 @@ export function RoleSwitcher() {
             {r.id === role && <span className="size-1.5 rounded-full bg-primary" />}
           </DropdownMenuItem>
         ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={() => router.navigate({ to: "/auth" })} className="text-destructive focus:text-destructive focus:bg-destructive/10 gap-2 cursor-pointer">
+          <LogOut className="size-4" />
+          <span>Keluar (Logout)</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
