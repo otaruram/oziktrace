@@ -280,24 +280,50 @@ function VerifyPage() {
                   />
                 </div>
 
-                <ul className="mt-4 space-y-2">
-                  {result.extracted.map((e, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs"
-                    >
-                      <span>
-                        <span className="font-medium">{e.name}</span>{" "}
-                        <span className="text-muted-foreground">
-                          · {e.dosage} · {e.qty} unit
-                        </span>
-                      </span>
-                      <span className={`font-mono text-[10px] ${e.matched ? "text-success" : "text-primary"}`}>
-                        {e.matched ? "MATCH" : "MISMATCH"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Split-pane comparison */}
+                <div className="mt-5 overflow-hidden rounded-xl border border-border">
+                  <div className="grid grid-cols-2 divide-x divide-border border-b border-border bg-surface font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                    <span className="px-3 py-2">Data E-Resep</span>
+                    <span className="px-3 py-2">Hasil Scan Fisik</span>
+                  </div>
+                  <ul className="divide-y divide-border">
+                    {result.extracted.map((e, i) => {
+                      const exp = rx.items[i];
+                      return (
+                        <li key={i} className="grid grid-cols-2 divide-x divide-border">
+                          <div className="min-w-0 px-3 py-3">
+                            <p className="truncate text-xs font-medium">{exp?.name ?? "—"}</p>
+                            <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                              {exp?.dosage ?? "—"} · qty {exp?.qty ?? "—"}
+                            </p>
+                          </div>
+                          <div
+                            className={`min-w-0 px-3 py-3 ${e.matched ? "bg-success-soft/40" : "bg-primary-soft/60"}`}
+                          >
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+                              <p className="truncate text-xs font-medium">{e.name}</p>
+                              <span
+                                className={`shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-wider ${
+                                  e.matched
+                                    ? "bg-success text-background"
+                                    : "bg-crimson-gradient text-primary-foreground"
+                                }`}
+                              >
+                                {e.matched ? "MATCH" : "MISMATCH"}
+                              </span>
+                            </div>
+                            <p
+                              className={`mt-0.5 font-mono text-[11px] ${e.matched ? "text-muted-foreground" : "text-primary"}`}
+                            >
+                              {e.dosage} · qty {e.qty}
+                            </p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
 
                 <div className="mt-4 rounded-lg border border-border bg-surface p-3">
                   {result.ocrLog.map((l) => (
