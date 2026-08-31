@@ -37,6 +37,13 @@ export const Route = createFileRoute("/pharmacy/verify/$id")({
 
 const SLOTS = ["Etiket label", "Strip / blister 1", "Strip / blister 2", "Kemasan luar", "Bukti serah"];
 
+const BOXES = [
+  { l: "12%", t: "22%", w: "52%", h: "16%", tag: "OBAT" },
+  { l: "18%", t: "48%", w: "34%", h: "14%", tag: "DOSIS" },
+  { l: "58%", t: "62%", w: "26%", h: "14%", tag: "QTY" },
+];
+
+
 function VerifyPage() {
   const { id } = Route.useParams();
   const { prescriptions, submitQc } = useOzik();
