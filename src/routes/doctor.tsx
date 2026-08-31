@@ -260,50 +260,105 @@ function DoctorPage() {
   );
 }
 
+const SEVERITY = [
+  {
+    max: 20,
+    key: "low",
+    label: "RENDAH",
+    text: "text-success",
+    bar: "bg-success",
+    soft: "bg-success-soft",
+    border: "border-success/30",
+  },
+  {
+    max: 50,
+    key: "mid",
+    label: "SEDANG",
+    text: "text-warning",
+    bar: "bg-warning",
+    soft: "bg-warning-soft",
+    border: "border-warning/40",
+  },
+  {
+    max: 101,
+    key: "high",
+    label: "TINGGI",
+    text: "text-primary",
+    bar: "bg-crimson-gradient",
+    soft: "bg-primary-soft",
+    border: "border-primary/40",
+  },
+] as const;
+
+export function severityOf(score: number) {
+  return SEVERITY.find((s) => score < s.max) ?? SEVERITY[2];
+}
+
 function MlWidget({
   score,
-  level,
   flags,
   compact,
 }: {
   score: number;
-  level: string;
+  level?: string;
   flags: string[];
   compact?: boolean;
 }) {
-  const danger = score >= 70;
+  const sev = severityOf(score);
+  const danger = sev.key === "high";
   return (
     <section
-      className={`rounded-2xl border bg-background p-5 ${danger ? "border-primary/30" : "border-border"} ${compact ? "" : "h-fit"}`}
+      className={`rounded-2xl border bg-background p-5 ${danger ? sev.border : "border-border"} ${compact ? "" : "h-fit"}`}
     >
-      <div className="flex items-center gap-2">
-        <Activity className={`size-4 ${danger ? "text-primary" : "text-muted-foreground"}`} />
-        <p className="text-sm font-medium">Pre-Check ML — Anomali / Overdose Score</p>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <Activity className={`size-4 shrink-0 ${sev.text}`} />
+          <p className="truncate text-sm font-medium">Pre-Check ML — Anomaly Score</p>
+        </div>
+        <span
+          className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold tracking-widest uppercase ${sev.soft} ${sev.text}`}
+        >
+          {sev.label}
+        </span>
       </div>
+
       <div className="mt-4 flex items-end gap-3">
-        <p className={`text-4xl font-semibold ${danger ? "text-primary" : ""}`}>{score}</p>
+        <p className={`text-4xl font-semibold tabular-nums ${sev.text}`}>{score}</p>
         <p className="mb-1.5 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-          / 100 · risiko {level}
+          / 100 risiko
         </p>
       </div>
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-strong">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ${danger ? "bg-crimson-gradient" : "bg-foreground/70"}`}
-          style={{ width: `${score}%` }}
-        />
+
+      {/* Severity bar with threshold ticks */}
+      <div className="relative mt-3">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-strong">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ease-out ${sev.bar}`}
+            style={{ width: `${Math.max(score, 2)}%` }}
+          />
+        </div>
+        <span className="absolute top-0 h-2.5 w-px bg-background/80" style={{ left: "20%" }} />
+        <span className="absolute top-0 h-2.5 w-px bg-background/80" style={{ left: "50%" }} />
       </div>
+      <div className="mt-1.5 grid grid-cols-3 font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+        <span className={sev.key === "low" ? "text-success" : ""}>0–19 aman</span>
+        <span className={`text-center ${sev.key === "mid" ? "text-warning" : ""}`}>20–50 tinjau</span>
+        <span className={`text-right ${sev.key === "high" ? "text-primary" : ""}`}>51+ tahan</span>
+      </div>
+
       <ul className="mt-4 space-y-2">
         {flags.map((f) => (
           <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
             {danger ? (
               <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-primary" />
             ) : (
-              <BadgeCheck className="mt-0.5 size-3.5 shrink-0" />
+              <BadgeCheck className={`mt-0.5 size-3.5 shrink-0 ${sev.text}`} />
             )}
-            {f}
+            <span className="min-w-0">{f}</span>
           </li>
         ))}
       </ul>
     </section>
   );
 }
+
