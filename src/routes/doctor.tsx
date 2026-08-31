@@ -282,12 +282,21 @@ function DoctorPage() {
                       </td>
                       <td className="px-5 py-3.5 font-medium">{rupiah(rx.escrowCap)}</td>
                       <td className="px-5 py-3.5">
-                        <span
-                          className={`font-mono text-xs ${rx.mlScore >= 70 ? "text-primary" : "text-muted-foreground"}`}
-                        >
-                          {rx.mlScore}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`font-mono text-xs font-semibold ${severityOf(rx.mlScore).text}`}
+                          >
+                            {rx.mlScore}
+                          </span>
+                          <span className="hidden h-1.5 w-14 overflow-hidden rounded-full bg-surface-strong sm:block">
+                            <span
+                              className={`block h-full rounded-full ${severityOf(rx.mlScore).bar}`}
+                              style={{ width: `${Math.max(rx.mlScore, 3)}%` }}
+                            />
+                          </span>
+                        </div>
                       </td>
+
                       <td className="px-5 py-3.5">
                         <StatusBadge status={rx.status} />
                       </td>
