@@ -37,6 +37,13 @@ export const Route = createFileRoute("/pharmacy/verify/$id")({
 
 const SLOTS = ["Etiket label", "Strip / blister 1", "Strip / blister 2", "Kemasan luar", "Bukti serah"];
 
+const BOXES = [
+  { l: "12%", t: "22%", w: "52%", h: "16%", tag: "OBAT" },
+  { l: "18%", t: "48%", w: "34%", h: "14%", tag: "DOSIS" },
+  { l: "58%", t: "62%", w: "26%", h: "14%", tag: "QTY" },
+];
+
+
 function VerifyPage() {
   const { id } = Route.useParams();
   const { prescriptions, submitQc } = useOzik();
@@ -82,7 +89,7 @@ function VerifyPage() {
       toast[r.mismatch ? "error" : "success"](
         r.mismatch ? "QC MISMATCH — klaim ditahan" : `QC lolos — confidence ${r.confidence}%`,
       );
-    }, 1400);
+    }, 2000);
   };
 
   const finish = () => {
@@ -168,19 +175,56 @@ function VerifyPage() {
                     <div className="grid h-full place-items-center">
                       <ScanLine className="size-6 text-muted-foreground" />
                     </div>
+
+                    {scanning && (
+                      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                        {/* laser sweep */}
+                        <div
+                          className="animate-scan-sweep absolute inset-x-0 top-0 h-8"
+                          style={{
+                            animationDelay: `${i * 120}ms`,
+                            background:
+                              "linear-gradient(to bottom, transparent, color-mix(in oklab, var(--primary) 35%, transparent), transparent)",
+                          }}
+                        >
+                          <div className="absolute inset-x-0 bottom-0 h-px bg-primary shadow-crimson" />
+                        </div>
+                        {/* mock bounding boxes */}
+                        {BOXES.map((b, bi) => (
+                          <div
+                            key={bi}
+                            className="animate-box-pop absolute rounded-sm border border-primary/70 bg-primary/5"
+                            style={{
+                              left: b.l,
+                              top: b.t,
+                              width: b.w,
+                              height: b.h,
+                              animationDelay: `${300 + bi * 220 + i * 100}ms`,
+                            }}
+                          >
+                            <span className="absolute -top-3.5 left-0 rounded-sm bg-primary px-1 font-mono text-[7px] leading-3 text-primary-foreground">
+                              {b.tag}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <span className="absolute bottom-1.5 left-1.5 rounded-md bg-background/90 px-1.5 py-0.5 font-mono text-[9px]">
                       {p}
                     </span>
-                    <button
-                      onClick={() => setPhotos((prev) => prev.filter((_, x) => x !== i))}
-                      className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-border bg-background text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-primary"
-                      aria-label="Hapus foto"
-                    >
-                      <Trash2 className="size-3" />
-                    </button>
+                    {!scanning && (
+                      <button
+                        onClick={() => setPhotos((prev) => prev.filter((_, x) => x !== i))}
+                        className="absolute top-1.5 right-1.5 grid size-6 place-items-center rounded-md border border-border bg-background text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 hover:text-primary"
+                        aria-label="Hapus foto"
+                      >
+                        <Trash2 className="size-3" />
+                      </button>
+                    )}
                   </div>
                 ))}
-                {photos.length < 5 && (
+                {photos.length < 5 && !scanning && (
                   <button
                     onClick={addPhoto}
                     className="grid aspect-4/3 place-items-center rounded-xl border border-dashed border-border-strong bg-surface text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary-soft hover:text-primary"
@@ -192,6 +236,13 @@ function VerifyPage() {
                   </button>
                 )}
               </div>
+
+              {scanning && (
+                <p className="mt-3 font-mono text-[11px] text-primary">
+                  ▍ Vision pipeline: OCR etiket → segmentasi strip → matching dosis…
+                </p>
+              )}
+
 
               <Button onClick={runScan} disabled={scanning} size="lg" className="mt-5 w-full shadow-crimson">
                 {scanning ? <Loader2 className="size-4 animate-spin" /> : <ScanLine className="size-4" />}
@@ -229,24 +280,50 @@ function VerifyPage() {
                   />
                 </div>
 
-                <ul className="mt-4 space-y-2">
-                  {result.extracted.map((e, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center justify-between rounded-lg border border-border bg-surface px-3 py-2 text-xs"
-                    >
-                      <span>
-                        <span className="font-medium">{e.name}</span>{" "}
-                        <span className="text-muted-foreground">
-                          · {e.dosage} · {e.qty} unit
-                        </span>
-                      </span>
-                      <span className={`font-mono text-[10px] ${e.matched ? "text-success" : "text-primary"}`}>
-                        {e.matched ? "MATCH" : "MISMATCH"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Split-pane comparison */}
+                <div className="mt-5 overflow-hidden rounded-xl border border-border">
+                  <div className="grid grid-cols-2 divide-x divide-border border-b border-border bg-surface font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                    <span className="px-3 py-2">Data E-Resep</span>
+                    <span className="px-3 py-2">Hasil Scan Fisik</span>
+                  </div>
+                  <ul className="divide-y divide-border">
+                    {result.extracted.map((e, i) => {
+                      const exp = rx.items[i];
+                      return (
+                        <li key={i} className="grid grid-cols-2 divide-x divide-border">
+                          <div className="min-w-0 px-3 py-3">
+                            <p className="truncate text-xs font-medium">{exp?.name ?? "—"}</p>
+                            <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">
+                              {exp?.dosage ?? "—"} · qty {exp?.qty ?? "—"}
+                            </p>
+                          </div>
+                          <div
+                            className={`min-w-0 px-3 py-3 ${e.matched ? "bg-success-soft/40" : "bg-primary-soft/60"}`}
+                          >
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
+                              <p className="truncate text-xs font-medium">{e.name}</p>
+                              <span
+                                className={`shrink-0 rounded px-1.5 py-0.5 font-mono text-[9px] font-semibold tracking-wider ${
+                                  e.matched
+                                    ? "bg-success text-background"
+                                    : "bg-crimson-gradient text-primary-foreground"
+                                }`}
+                              >
+                                {e.matched ? "MATCH" : "MISMATCH"}
+                              </span>
+                            </div>
+                            <p
+                              className={`mt-0.5 font-mono text-[11px] ${e.matched ? "text-muted-foreground" : "text-primary"}`}
+                            >
+                              {e.dosage} · qty {e.qty}
+                            </p>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
 
                 <div className="mt-4 rounded-lg border border-border bg-surface p-3">
                   {result.ocrLog.map((l) => (

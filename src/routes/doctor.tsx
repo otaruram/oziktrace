@@ -142,50 +142,94 @@ function DoctorPage() {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">Item Obat</p>
-                  <Button variant="outline" size="sm" onClick={() => setItems((p) => [...p, emptyItem()])}>
-                    <Plus className="size-3.5" /> Tambah item
+              <div className="mt-5 overflow-hidden rounded-xl border border-border">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border bg-surface px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">Item Obat</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      Isi nama obat, dosis, jumlah, dan aturan pakai.
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="shrink-0"
+                    onClick={() => setItems((p) => [...p, emptyItem()])}
+                  >
+                    <Plus className="size-3.5" /> Tambah
                   </Button>
                 </div>
-                <div className="mt-3 space-y-3">
+
+                <div className="hidden grid-cols-12 gap-3 border-b border-border bg-surface/60 px-4 py-2 font-mono text-[10px] tracking-widest text-muted-foreground uppercase sm:grid">
+                  <span className="col-span-4">Nama obat</span>
+                  <span className="col-span-2">Dosis</span>
+                  <span className="col-span-2">Qty</span>
+                  <span className="col-span-3">Aturan pakai</span>
+                  <span className="col-span-1 text-right">—</span>
+                </div>
+
+                <div className="divide-y divide-border">
                   {items.map((it, i) => (
-                    <div key={i} className="rounded-xl border border-border bg-surface p-3">
-                      <div className="grid gap-2 sm:grid-cols-12">
+                    <div
+                      key={i}
+                      className="grid gap-2 px-4 py-3 transition-colors hover:bg-surface sm:grid-cols-12 sm:items-center sm:gap-3"
+                    >
+                      <div className="sm:col-span-4">
+                        <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                          Nama obat
+                        </label>
                         <input
-                          className={`${field} sm:col-span-4`}
-                          placeholder="Nama obat"
+                          className={field}
+                          placeholder="Metformin 500mg"
                           value={it.name}
                           onChange={(e) => setItem(i, { name: e.target.value })}
                         />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 sm:col-span-4 sm:grid-cols-2 sm:gap-3">
+                        <div>
+                          <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                            Dosis
+                          </label>
+                          <input
+                            className={field}
+                            placeholder="500mg"
+                            value={it.dosage}
+                            onChange={(e) => setItem(i, { dosage: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                            Qty
+                          </label>
+                          <input
+                            className={`${field} text-right font-mono tabular-nums`}
+                            type="number"
+                            min={0}
+                            placeholder="0"
+                            value={it.qty || ""}
+                            onChange={(e) => setItem(i, { qty: Number(e.target.value) })}
+                          />
+                        </div>
+                      </div>
+                      <div className="sm:col-span-3">
+                        <label className="mb-1 block text-[10px] font-medium text-muted-foreground sm:hidden">
+                          Aturan pakai
+                        </label>
                         <input
-                          className={`${field} sm:col-span-2`}
-                          placeholder="Dosis"
-                          value={it.dosage}
-                          onChange={(e) => setItem(i, { dosage: e.target.value })}
-                        />
-                        <input
-                          className={`${field} sm:col-span-2`}
-                          type="number"
-                          placeholder="Qty"
-                          value={it.qty || ""}
-                          onChange={(e) => setItem(i, { qty: Number(e.target.value) })}
-                        />
-                        <input
-                          className={`${field} sm:col-span-3`}
-                          placeholder="Aturan pakai"
+                          className={field}
+                          placeholder="2x1 sesudah makan"
                           value={it.usage}
                           onChange={(e) => setItem(i, { usage: e.target.value })}
                         />
-                        <button
-                          onClick={() => setItems((p) => p.filter((_, x) => x !== i))}
-                          className="grid place-items-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary sm:col-span-1"
-                          aria-label="Hapus item"
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
                       </div>
+                      <button
+                        onClick={() => setItems((p) => p.filter((_, x) => x !== i))}
+                        className="flex h-9 items-center justify-center gap-1.5 rounded-lg border border-border bg-background text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-soft hover:text-primary sm:col-span-1 sm:h-auto sm:self-stretch"
+                        aria-label="Hapus item"
+                      >
+                        <Trash2 className="size-4" />
+                        <span className="sm:hidden">Hapus item</span>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -194,14 +238,15 @@ function DoctorPage() {
               <MlWidget score={score} level={level} flags={flags} compact />
 
               <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">Virtual Escrow Cap</p>
-                  <p className="text-xl font-semibold">{rupiah(cap)}</p>
+                  <p className="text-xl font-semibold tabular-nums">{rupiah(cap)}</p>
                 </div>
-                <Button size="lg" className="shadow-crimson" onClick={submit}>
-                  Terbitkan & Kunci Plafon Klaim
+                <Button size="lg" className="shrink-0 shadow-crimson" onClick={submit}>
+                  Terbitkan &amp; Kunci Plafon Klaim
                 </Button>
               </div>
+
             </DialogContent>
           </Dialog>
         </div>
@@ -237,12 +282,21 @@ function DoctorPage() {
                       </td>
                       <td className="px-5 py-3.5 font-medium">{rupiah(rx.escrowCap)}</td>
                       <td className="px-5 py-3.5">
-                        <span
-                          className={`font-mono text-xs ${rx.mlScore >= 70 ? "text-primary" : "text-muted-foreground"}`}
-                        >
-                          {rx.mlScore}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`font-mono text-xs font-semibold ${severityOf(rx.mlScore).text}`}
+                          >
+                            {rx.mlScore}
+                          </span>
+                          <span className="hidden h-1.5 w-14 overflow-hidden rounded-full bg-surface-strong sm:block">
+                            <span
+                              className={`block h-full rounded-full ${severityOf(rx.mlScore).bar}`}
+                              style={{ width: `${Math.max(rx.mlScore, 3)}%` }}
+                            />
+                          </span>
+                        </div>
                       </td>
+
                       <td className="px-5 py-3.5">
                         <StatusBadge status={rx.status} />
                       </td>
@@ -260,50 +314,105 @@ function DoctorPage() {
   );
 }
 
+const SEVERITY = [
+  {
+    max: 20,
+    key: "low",
+    label: "RENDAH",
+    text: "text-success",
+    bar: "bg-success",
+    soft: "bg-success-soft",
+    border: "border-success/30",
+  },
+  {
+    max: 50,
+    key: "mid",
+    label: "SEDANG",
+    text: "text-warning",
+    bar: "bg-warning",
+    soft: "bg-warning-soft",
+    border: "border-warning/40",
+  },
+  {
+    max: 101,
+    key: "high",
+    label: "TINGGI",
+    text: "text-primary",
+    bar: "bg-crimson-gradient",
+    soft: "bg-primary-soft",
+    border: "border-primary/40",
+  },
+] as const;
+
+export function severityOf(score: number) {
+  return SEVERITY.find((s) => score < s.max) ?? SEVERITY[2];
+}
+
 function MlWidget({
   score,
-  level,
   flags,
   compact,
 }: {
   score: number;
-  level: string;
+  level?: string;
   flags: string[];
   compact?: boolean;
 }) {
-  const danger = score >= 70;
+  const sev = severityOf(score);
+  const danger = sev.key === "high";
   return (
     <section
-      className={`rounded-2xl border bg-background p-5 ${danger ? "border-primary/30" : "border-border"} ${compact ? "" : "h-fit"}`}
+      className={`rounded-2xl border bg-background p-5 ${danger ? sev.border : "border-border"} ${compact ? "" : "h-fit"}`}
     >
-      <div className="flex items-center gap-2">
-        <Activity className={`size-4 ${danger ? "text-primary" : "text-muted-foreground"}`} />
-        <p className="text-sm font-medium">Pre-Check ML — Anomali / Overdose Score</p>
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <Activity className={`size-4 shrink-0 ${sev.text}`} />
+          <p className="truncate text-sm font-medium">Pre-Check ML — Anomaly Score</p>
+        </div>
+        <span
+          className={`shrink-0 rounded-md px-2 py-0.5 font-mono text-[10px] font-semibold tracking-widest uppercase ${sev.soft} ${sev.text}`}
+        >
+          {sev.label}
+        </span>
       </div>
+
       <div className="mt-4 flex items-end gap-3">
-        <p className={`text-4xl font-semibold ${danger ? "text-primary" : ""}`}>{score}</p>
+        <p className={`text-4xl font-semibold tabular-nums ${sev.text}`}>{score}</p>
         <p className="mb-1.5 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-          / 100 · risiko {level}
+          / 100 risiko
         </p>
       </div>
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-strong">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ${danger ? "bg-crimson-gradient" : "bg-foreground/70"}`}
-          style={{ width: `${score}%` }}
-        />
+
+      {/* Severity bar with threshold ticks */}
+      <div className="relative mt-3">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-strong">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ease-out ${sev.bar}`}
+            style={{ width: `${Math.max(score, 2)}%` }}
+          />
+        </div>
+        <span className="absolute top-0 h-2.5 w-px bg-background/80" style={{ left: "20%" }} />
+        <span className="absolute top-0 h-2.5 w-px bg-background/80" style={{ left: "50%" }} />
       </div>
+      <div className="mt-1.5 grid grid-cols-3 font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+        <span className={sev.key === "low" ? "text-success" : ""}>0–19 aman</span>
+        <span className={`text-center ${sev.key === "mid" ? "text-warning" : ""}`}>20–50 tinjau</span>
+        <span className={`text-right ${sev.key === "high" ? "text-primary" : ""}`}>51+ tahan</span>
+      </div>
+
       <ul className="mt-4 space-y-2">
         {flags.map((f) => (
           <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
             {danger ? (
               <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-primary" />
             ) : (
-              <BadgeCheck className="mt-0.5 size-3.5 shrink-0" />
+              <BadgeCheck className={`mt-0.5 size-3.5 shrink-0 ${sev.text}`} />
             )}
-            {f}
+            <span className="min-w-0">{f}</span>
           </li>
         ))}
       </ul>
     </section>
   );
 }
+
