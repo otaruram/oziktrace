@@ -13,7 +13,7 @@ import {
   KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Logo, RoleSwitcher } from "@/components/AppHeader";
+import { Logo, RoleSwitcher, ResetDemoButton } from "@/components/AppHeader";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -84,6 +84,7 @@ function Landing() {
             </a>
           </nav>
           <div className="flex-1" />
+          <ResetDemoButton />
           <RoleSwitcher />
           <Button asChild size="sm" className="shadow-crimson">
             <Link to="/auth">Mulai Akses Portal</Link>

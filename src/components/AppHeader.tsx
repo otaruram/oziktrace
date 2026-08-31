@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { ChevronDown, ShieldCheck } from "lucide-react";
+import { ChevronDown, ShieldCheck, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -82,8 +82,28 @@ export function AppHeader({
           {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}
         </div>
         {actions}
+        <ResetDemoButton />
         <RoleSwitcher />
       </div>
     </header>
+  );
+}
+
+export function ResetDemoButton() {
+  const { resetDemo } = useOzik();
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="gap-2 text-muted-foreground hover:text-foreground"
+      onClick={() => {
+        resetDemo();
+        alert("Demo state telah direset ke kondisi awal.");
+      }}
+      title="Reset Demo Data"
+    >
+      <RotateCcw className="size-4" />
+      <span className="hidden sm:inline text-xs">Reset</span>
+    </Button>
   );
 }

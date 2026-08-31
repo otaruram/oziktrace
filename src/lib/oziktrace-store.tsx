@@ -267,6 +267,7 @@ type Ctx = {
   submitQc: (id: string, photos: string[]) => QcResult;
   verifyPin: (id: string, pin: string) => boolean;
   settle: (id: string) => void;
+  resetDemo: () => void;
 };
 
 const StoreContext = createContext<Ctx | null>(null);
@@ -361,6 +362,11 @@ export function OzikStoreProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const resetDemo: Ctx["resetDemo"] = useCallback(() => {
+    setPrescriptions(seed());
+    setActivePatientId("RX-2408-0091");
+  }, []);
+
   const value = useMemo(
     () => ({
       role,
@@ -372,8 +378,9 @@ export function OzikStoreProvider({ children }: { children: ReactNode }) {
       submitQc,
       verifyPin,
       settle,
+      resetDemo,
     }),
-    [role, prescriptions, activePatientId, createPrescription, submitQc, verifyPin, settle],
+    [role, prescriptions, activePatientId, createPrescription, submitQc, verifyPin, settle, resetDemo],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
