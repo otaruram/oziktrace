@@ -42,6 +42,8 @@ function TrackPage() {
   const rx = prescriptions.find((r) => r.id === id);
   const [pin, setPin] = useState("");
   const [shake, setShake] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
+
 
   if (!rx) {
     return (
