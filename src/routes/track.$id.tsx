@@ -81,8 +81,11 @@ function TrackPage() {
           setTimeout(() => setShake(false), 500);
           toast.error("PIN tidak valid. Minta ulang kode ke petugas apotek.");
         } else {
+          setCelebrate(true);
+          setTimeout(() => setCelebrate(false), 2200);
           toast.success("Proof-of-Dispense terverifikasi — klaim dilepas dari escrow.");
         }
+
       }, 150);
     }
   };
