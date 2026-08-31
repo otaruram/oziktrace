@@ -82,7 +82,7 @@ function VerifyPage() {
       toast[r.mismatch ? "error" : "success"](
         r.mismatch ? "QC MISMATCH — klaim ditahan" : `QC lolos — confidence ${r.confidence}%`,
       );
-    }, 1400);
+    }, 2000);
   };
 
   const finish = () => {
