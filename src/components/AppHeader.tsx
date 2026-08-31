@@ -74,9 +74,11 @@ export function AppHeader({
 }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 w-full max-w-[1600px] items-center gap-4 px-4 sm:px-6">
-        <Logo />
-        <span className="hidden h-5 w-px bg-border sm:block" />
+      <div className="mx-auto flex h-14 w-full max-w-[1600px] items-center gap-2 sm:gap-4 px-2 sm:px-6 overflow-x-hidden">
+        <div className="hidden sm:block shrink-0">
+          <Logo compact={true} />
+        </div>
+        <span className="hidden h-5 w-px bg-border sm:block shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium">{title}</p>
           {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}

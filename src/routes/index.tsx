@@ -86,8 +86,11 @@ function Landing() {
           <div className="flex-1" />
           <ResetDemoButton />
           <RoleSwitcher />
-          <Button asChild size="sm" className="shadow-crimson">
-            <Link to="/auth">Mulai Akses Portal</Link>
+          <Button asChild size="sm" className="ml-1 sm:ml-2 shadow-crimson">
+            <Link to="/auth">
+              <span className="hidden sm:inline">Mulai Akses Portal</span>
+              <span className="sm:hidden">Akses</span>
+            </Link>
           </Button>
         </div>
       </header>

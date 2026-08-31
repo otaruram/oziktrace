@@ -195,8 +195,8 @@ function AdminPage() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="feed" className="mt-4">
-            <div className="rounded-xl border border-border bg-background">
+          <TabsContent value="feed" className="mt-4 min-w-0">
+            <div className="rounded-xl border border-border bg-background overflow-hidden">
               <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
                 <div className="relative min-w-[220px] flex-1">
                   <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -225,7 +225,7 @@ function AdminPage() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto max-w-full">
                 <table className="w-full min-w-[900px] text-sm">
                   <thead>
                     <tr className="border-b border-border text-left text-[11px] tracking-wide text-muted-foreground uppercase">
@@ -308,11 +308,11 @@ function AdminPage() {
                       key={e.p}
                       className="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"
                     >
-                      <span className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-semibold">
+                      <span className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] font-semibold shrink-0">
                         {e.m}
                       </span>
-                      <code className="font-mono text-xs">{e.p}</code>
-                      <span className="flex-1 text-xs text-muted-foreground">{e.d}</span>
+                      <code className="font-mono text-xs break-all">{e.p}</code>
+                      <span className="flex-1 text-xs text-muted-foreground min-w-[100px]">{e.d}</span>
                       <Button
                         size="sm"
                         variant="ghost"
